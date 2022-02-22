@@ -1,0 +1,169 @@
+create database student_management;
+use student_management;
+create table students
+(
+    id      int auto_increment primary key,
+    name    varchar(50),
+    address varchar(50),
+    sex     bit         not null default 1,
+    age     int         not null check (age between 18 and 25),
+    email   varchar(50) not null unique,
+    phone   varchar(10) not null
+);
+create table classes
+(
+    id   int auto_increment primary key,
+    name varchar(50) not null unique
+);
+alter table students
+    add classId int;
+alter table students
+    add foreign key (classId) references classes (Id);
+insert into classes (name)
+values ('Lớp 1');
+insert into classes (name)
+values ('Lớp 2');
+insert into classes (name)
+values ('Lớp 3');
+insert into classes (name)
+values ('Lớp 4');
+insert into classes (name)
+values ('Lớp 5');
+
+insert into students(name, address, sex, age, email, phone)
+values ('Tình', 'Hà nội', 1, 18, 'princetinkie1@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Tài', 'Hà nam', 0, 18, 'princetinkie2@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Tú', 'bn', 0, 18, 'princetinkie3@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Tiến', 'Hà nội', 1, 18, 'princetinkie4@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Tiềm', 'Hà nội', 0, 18, 'princetinkie5@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Thắng', 'Hà nội', 1, 18, 'princetinkie6@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Thảo', 'Hà nội', 1, 18, 'princetinkie7@gmail.com', 0981240298);
+insert into students(name, address, sex, age, email, phone)
+values ('Thành', 'Qn', 1, 18, 'princetinkie8@gmail.com', 0981240297);
+insert into students(name, address, sex, age, email, phone)
+values ('Tâm', 'Hà nội', 1, 18, 'princetinkie9@gmail.com', 0981240299);
+insert into students(name, address, sex, age, email, phone)
+values ('Thu', 'Hà nội', 1, 18, 'princetinkie10@gmail.com', 0981240299);
+
+select *
+from students;
+select students.*
+from students
+where sex = true;
+update students
+set age=22
+where id = 3;
+update students
+set age=24
+where id = 7;
+update students
+set age=20
+where id = 1;
+select students.*
+from students
+where age < 20;
+select students.*
+from students
+where address like ('H%');
+select students.*
+from students
+where name like ('A%');
+select *
+from students;
+update students
+set classId=2
+where id = 1;
+update students
+set classId=2
+where id = 2;
+update students
+set classId=3
+where id = 5;
+update students
+set classId=4
+where id = 4;
+update students
+set classId=1
+where id = 3;
+select classes.name, students.name
+from students
+         join classes on classes.id = students.classId;
+select *
+from students
+where id = 1;
+select students.*
+from students
+order by age DESC;
+update students
+set sex=0
+where address like ('H%');
+select count(students.classid)
+from students;
+select *, Max(age)
+from students;
+
+select classes.name, count(students.name)
+from students
+         join classes
+              on students.classId = classes.id
+group by classes.name;
+select students.*
+from students
+where students.address = 'Hà nội';
+update students
+set address='Đà Nẵng'
+where id = 6;
+update students
+set address='Đà Nẵng'
+where id = 5;
+update students
+set address='Hồ Chí Minh'
+where id = 5;
+select students.*
+from students
+where address in ('Hà Nội', 'Đà Nẵng');
+
+select classes.name, Total
+from (select classes.name, count(students.name) as 'Total'
+      from students
+               join classes on students.classId = classes.id
+      group by classes.name) as count_table
+         join classes on count_table.name = classes.name
+where Total = (
+    select max(Total)
+    from (select count(students.name) as 'Total'
+          from students
+                   join classes on students.classId = classes.id
+          group by classes.name) as count_table
+);
+select *, classes.name
+from students
+         join classes on students.classId = classes.id;
+
+select *
+from students
+where age = (select Max(age) from students);
+
+select address,count(students.name) from students
+group by address;
+
+select classes.name,count(students.name) as tong from classes join students on students.classId=classes.id
+group by classes.name
+having tong>1;
+
+select address, count(students.name) as tong from students
+group by address
+having tong>1;
+
+select *, Max(age) from students
+where age<(select Max(age) from students);
+
+create table regex(
+    name varchar(50) check(name regexp '^ [a-zA-Z] [a-zA-Z] [a-zA-Z] $')
+);
